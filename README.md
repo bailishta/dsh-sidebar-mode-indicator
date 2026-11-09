@@ -13,6 +13,51 @@ the mode.
 
 ![Mode dots settings page](docs/settings-preview.png)
 
+## Installation
+
+Requirements: DeepSeek Harness with the Plugin Manager (the desktop app or a Web
+profile). The `plugin_manager` tool ships with the Standard and Creator presets;
+installing affects the whole profile, so every session in it sees the plugin.
+Verified on DeepSeek Harness Desktop `0.2.2-rc.1` (Windows).
+
+1. Get the code and keep the folder in place — a linked bundle is loaded from
+   that directory, so do not delete it afterwards:
+
+   ```bash
+   git clone https://github.com/bailishta/dsh-sidebar-mode-indicator.git
+   ```
+
+   (Downloading the ZIP and unzipping also works.)
+
+2. In any DSH session, ask the agent to install the bundle. Do not edit the
+   profile's `package.json` or `cordis.patch.yml` by hand — the Plugin Manager
+   performs the package install, bundle selection and patch updates itself:
+
+   > Use `plugin_manager` with `action: install_bundle` and target
+   > `C:\path\to\dsh-sidebar-mode-indicator` (the absolute path of the folder).
+
+   Installation requires the `danger-full-access` permission mode or an approval
+   for that call. The agent may also install straight from the repository URL,
+   since `install_bundle` accepts a GitHub/git spec.
+
+3. The result must report `application: applied` and `enabled: true`. With HMR
+   the plugin activates without a restart; a profile that runs without HMR needs
+   a DSH restart before the sidebar and settings page appear.
+
+4. Verify: the left sidebar shows a pill on each Session row, and
+   **Settings → Mode dots** lists the built-in modes.
+
+There is no build step: the package is plain ESM JavaScript, so no
+`pnpm install` or compile is needed.
+
+**Update** — `git pull` in the folder, then remove and reinstall the bundle
+(`plugin_manager` `remove_bundle`, then `install_bundle` with the same path):
+replacing an installed package needs a fresh client module generation, and a
+profile without HMR also needs a restart.
+
+**Uninstall** — `plugin_manager` `remove_bundle` with target
+`dsh-session-mode-indicator`, or turn the bundle off on the sidebar Plugins page.
+
 ## Modes are discovered, not hard-coded
 
 - The four shipped presets — standard, PTC, create (cordis), minimal — carry

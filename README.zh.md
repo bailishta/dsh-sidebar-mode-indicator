@@ -10,6 +10,44 @@ Left-sidebar indicator for the mode (agent preset) each Session runs under.
 
 ![模式圆点设置页](docs/settings-preview.png)
 
+## 安装方法
+
+前置条件：已安装带插件管理器的 DeepSeek Harness（桌面版或 Web profile）。
+`plugin_manager` 工具随「标准」「创造」预设提供；安装作用于整个 profile，
+该 profile 下的所有会话都会加载这个插件。
+已在 DeepSeek Harness Desktop `0.2.2-rc.1`（Windows）上验证。
+
+1. 获取代码，并把文件夹留在原地——本地 bundle 是链接安装的，装完不要删除目录：
+
+   ```bash
+   git clone https://github.com/bailishta/dsh-sidebar-mode-indicator.git
+   ```
+
+   （直接下载 ZIP 解压也可以。）
+
+2. 在任意 DSH 会话里让 agent 安装。不要手动改 profile 的 `package.json` 或
+   `cordis.patch.yml`——安装包、选择 bundle、更新补丁都由插件管理器完成：
+
+   > 用 `plugin_manager` 的 `install_bundle`，target 填
+   > `C:\path\to\dsh-sidebar-mode-indicator`（这个文件夹的绝对路径）。
+
+   安装需要会话处于 `danger-full-access` 权限模式，或对该次调用单独批准。
+   也可以直接让 agent 从仓库地址安装（`install_bundle` 接受 GitHub/git 源）。
+
+3. 返回结果里应看到 `application: applied`、`enabled: true`。有 HMR 时无需重启；
+   没有 HMR 的 profile 需要重启 DSH 才会出现侧栏标记和设置页。
+
+4. 验证：左侧栏每个会话行出现模式胶囊，设置里出现 **模式圆点** 页面。
+
+没有构建步骤：插件是纯 ESM JavaScript，不需要 `pnpm install` 或编译。
+
+**升级** — 在目录里 `git pull`，然后在 DSH 里先 `plugin_manager` `remove_bundle`
+再 `install_bundle` 同一个路径：替换已安装的包需要新的客户端模块；没有 HMR 的
+profile 还需要重启。
+
+**卸载** — 用 `plugin_manager` `remove_bundle`，target 填
+`dsh-session-mode-indicator`；或在侧栏「插件」页把该 bundle 关掉。
+
 ## 模式不是写死的
 
 - 4 个内置模式（标准、PTC、创造、极简）使用本地化名称和默认颜色。
