@@ -2,10 +2,16 @@
 
 Left-sidebar indicator for the mode (agent preset) each Session runs under.
 
+[简体中文](README.zh.md) | **English**
+
+![Sidebar mode pills](docs/mode-badge-preview.png)
+
 Each Session keeps the mode it started with, and that mode cannot change once
 the Session opens. The plugin adds one piece of row metadata to the sidebar:
 a small pill with a colored dot and the mode's name. The dot color identifies
 the mode.
+
+![Mode dots settings page](docs/settings-preview.png)
 
 ## Modes are discovered, not hard-coded
 
@@ -31,7 +37,8 @@ Settings → **Mode dots** (right after Agent presets) contains:
 
 - **Show mode dots** — toggles the dot in the sidebar pill.
 - **Built-in modes / Custom modes** — one row per known mode with a color
-  preview, ten preset swatches, and a native color picker.
+  preview, ten preset swatches, and a native color picker; custom rows also
+  show the full preset id.
 - **Refresh** — re-reads the preset roster, picking up presets installed since
   the page was opened.
 - **Reset colors** — drops user colors and re-derives the automatic ones.
@@ -73,3 +80,4 @@ is loaded; auto-assigned colors keep working without any contributor.
 - `index.js` / `cordis.patch.yml` — the Host row and its bundle patch.
 - `locale/*.json` — Plugin Manager title/description.
 - `docs/mode-badge-preview.png` — sidebar preview.
+- `docs/settings-preview.png` — settings page preview.
