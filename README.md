@@ -4,21 +4,58 @@ Left-sidebar indicator for the mode (agent preset) each Session runs under.
 
 [简体中文](README.zh.md) | **English**
 
-![Sidebar mode pills](docs/mode-badge-preview.png)
+![Sidebar mode pills](https://raw.githubusercontent.com/bailishta/dsh-sidebar-mode-indicator/main/docs/mode-badge-preview.png)
 
 Each Session keeps the mode it started with, and that mode cannot change once
 the Session opens. The plugin adds one piece of row metadata to the sidebar:
 a small pill with a colored dot and the mode's name. The dot color identifies
 the mode.
 
-![Mode dots settings page](docs/settings-preview.png)
+![Mode dots settings page](https://raw.githubusercontent.com/bailishta/dsh-sidebar-mode-indicator/main/docs/settings-preview.png)
 
 ## Installation
 
-Requirements: DeepSeek Harness with the Plugin Manager (the desktop app or a Web
-profile). The `plugin_manager` tool ships with the Standard and Creator presets;
-installing affects the whole profile, so every session in it sees the plugin.
-Verified on DeepSeek Harness Desktop `0.2.2-rc.1` (Windows).
+Requirements: DeepSeek Harness `0.2.2-rc.1` (the desktop app, or a `dsh` profile such
+as `web`). A plugin belongs to one profile — every session opened from that profile
+loads it afterwards.
+
+### With the `dsh` CLI
+
+Install the harness CLI once. It needs Node.js 24.9+ and `pnpm` on `PATH`; the
+desktop app also ships a `dsh` command that bundles both
+(`resources\runtime\cli\bin` — add that folder to `PATH` instead, if you prefer):
+
+```sh
+npm install -g @deepseek-ai/dsh pnpm
+```
+
+Then install, update, or remove the plugin in a profile (`web` is only the profile
+name — use whichever profile you launch):
+
+```sh
+dsh plugin --profile web add dsh-session-mode-indicator
+dsh plugin --profile web update dsh-session-mode-indicator@latest
+dsh plugin --profile web remove dsh-session-mode-indicator
+```
+
+`add` forwards to pnpm inside the profile and records the dependency and the bundle
+layer in the profile `package.json`. There is no build step and no restart: the next
+`dsh web` starts the UI with the plugin loaded.
+
+Prefer a checkout? The same command installs a local copy instead of the registry
+package — use an absolute path, and `link:` keeps loading the plugin from that
+directory, so keep the folder:
+
+```sh
+git clone https://github.com/bailishta/dsh-sidebar-mode-indicator.git
+dsh plugin --profile web add link:C:/path/to/dsh-sidebar-mode-indicator
+```
+
+### With the Plugin Manager (desktop app or Web session)
+
+The `plugin_manager` tool ships with the Standard and Creator presets and installs
+from a folder or a repository URL. Verified on DeepSeek Harness Desktop
+`0.2.2-rc.1` (Windows).
 
 1. Get the code and keep the folder in place — a linked bundle is loaded from
    that directory, so do not delete it afterwards:
@@ -50,13 +87,16 @@ Verified on DeepSeek Harness Desktop `0.2.2-rc.1` (Windows).
 There is no build step: the package is plain ESM JavaScript, so no
 `pnpm install` or compile is needed.
 
-**Update** — `git pull` in the folder, then remove and reinstall the bundle
-(`plugin_manager` `remove_bundle`, then `install_bundle` with the same path):
-replacing an installed package needs a fresh client module generation, and a
-profile without HMR also needs a restart.
+**Update** — `dsh plugin --profile web update dsh-session-mode-indicator@latest` for
+a registry install. For a checkout: `git pull`, then remove and reinstall the bundle
+(`dsh plugin --profile web remove`, then `add link:` again; or `plugin_manager`
+`remove_bundle`, then `install_bundle` with the same path): replacing an installed
+package needs a fresh client module generation, and a profile without HMR also needs
+a restart.
 
-**Uninstall** — `plugin_manager` `remove_bundle` with target
-`dsh-session-mode-indicator`, or turn the bundle off on the sidebar Plugins page.
+**Uninstall** — `dsh plugin --profile web remove dsh-session-mode-indicator`,
+`plugin_manager` `remove_bundle` with target `dsh-session-mode-indicator`, or turn
+the bundle off on the sidebar Plugins page.
 
 ## Modes are discovered, not hard-coded
 
@@ -117,6 +157,18 @@ registering inside `ctx.effect`. The service also exposes `getModes()` (the
 current `{ id, name, color, builtin, contributed }` list) and `subscribe(fn)`
 for consumers that follow changes. Contributions live only while their plugin
 is loaded; auto-assigned colors keep working without any contributor.
+
+## Publishing
+
+A release is published from the repository root under the name in `package.json` —
+there is no build step:
+
+```sh
+npm login
+npm publish
+```
+
+`npm pack --dry-run` lists exactly which files ship.
 
 ## Files
 

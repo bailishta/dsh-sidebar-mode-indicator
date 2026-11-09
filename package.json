@@ -1,7 +1,6 @@
 {
   "name": "dsh-session-mode-indicator",
   "version": "0.1.0",
-  "private": true,
   "description": "Shows each Session's own agent-preset mode beside the session row in the left sidebar.",
   "type": "module",
   "main": "index.js",
@@ -20,6 +19,28 @@
     "README.md",
     "README.zh.md"
   ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "cordis",
+    "plugin",
+    "agent-preset",
+    "session",
+    "sidebar",
+    "ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bailishta/dsh-sidebar-mode-indicator.git"
+  },
+  "homepage": "https://github.com/bailishta/dsh-sidebar-mode-indicator",
+  "bugs": {
+    "url": "https://github.com/bailishta/dsh-sidebar-mode-indicator/issues"
+  },
+  "icon": "icon.svg",
+  "publishConfig": {
+    "access": "public"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"

@@ -4,17 +4,50 @@ Left-sidebar indicator for the mode (agent preset) each Session runs under.
 
 [English](README.md) | **简体中文**
 
-![左侧栏模式胶囊](docs/mode-badge-preview.png)
+![左侧栏模式胶囊](https://raw.githubusercontent.com/bailishta/dsh-sidebar-mode-indicator/main/docs/mode-badge-preview.png)
 
 每个会话开启后模式固定、不能切换。插件给左侧栏的会话行加一条元数据：带彩色圆点和模式名的小胶囊，圆点颜色就是模式。
 
-![模式圆点设置页](docs/settings-preview.png)
+![模式圆点设置页](https://raw.githubusercontent.com/bailishta/dsh-sidebar-mode-indicator/main/docs/settings-preview.png)
 
 ## 安装方法
 
-前置条件：已安装带插件管理器的 DeepSeek Harness（桌面版或 Web profile）。
-`plugin_manager` 工具随「标准」「创造」预设提供；安装作用于整个 profile，
-该 profile 下的所有会话都会加载这个插件。
+前置条件：DeepSeek Harness `0.2.2-rc.1`（桌面版，或 `web` 这类 `dsh` profile）。
+插件属于某一个 profile，从该 profile 打开的会话都会加载它。
+
+### 用 `dsh` CLI 安装
+
+先装一次 Harness 命令行。它需要 Node.js 24.9+，并且 `PATH` 上有 `pnpm`；桌面版也
+自带一份 `dsh` 命令，用的是它自己的运行时和 pnpm（`resources\runtime\cli\bin`，
+把这个目录加进 `PATH` 就能直接用）：
+
+```sh
+npm install -g @deepseek-ai/dsh pnpm
+```
+
+然后在这个 profile 里安装、升级或卸载（`web` 只是 profile 名，换成你实际启动的那个）：
+
+```sh
+dsh plugin --profile web add dsh-session-mode-indicator
+dsh plugin --profile web update dsh-session-mode-indicator@latest
+dsh plugin --profile web remove dsh-session-mode-indicator
+```
+
+`add` 会把参数转发给该 profile 里的 pnpm，并把依赖和 bundle 层写进 profile 的
+`package.json`。没有构建步骤，也不需要重启：下一次 `dsh web` 启动的界面里就带着
+这个插件。
+
+想用本地目录而不是 registry 包？同一条命令也能装——用绝对路径；`link:` 会让
+插件一直从这个目录加载，所以别删它：
+
+```sh
+git clone https://github.com/bailishta/dsh-sidebar-mode-indicator.git
+dsh plugin --profile web add link:C:/path/to/dsh-sidebar-mode-indicator
+```
+
+### 用插件管理器（桌面版或 Web 会话）
+
+`plugin_manager` 工具随「标准」「创造」预设提供，可以从文件夹或仓库地址安装。
 已在 DeepSeek Harness Desktop `0.2.2-rc.1`（Windows）上验证。
 
 1. 获取代码，并把文件夹留在原地——本地 bundle 是链接安装的，装完不要删除目录：
@@ -41,12 +74,14 @@ Left-sidebar indicator for the mode (agent preset) each Session runs under.
 
 没有构建步骤：插件是纯 ESM JavaScript，不需要 `pnpm install` 或编译。
 
-**升级** — 在目录里 `git pull`，然后在 DSH 里先 `plugin_manager` `remove_bundle`
-再 `install_bundle` 同一个路径：替换已安装的包需要新的客户端模块；没有 HMR 的
-profile 还需要重启。
+**升级** — 从 registry 安装的：`dsh plugin --profile web update dsh-session-mode-indicator@latest`。
+从本地目录安装的：先 `git pull`，再卸载重装（`dsh plugin --profile web remove`
+后再 `add link:`；或用 `plugin_manager` `remove_bundle` 再 `install_bundle` 同一个
+路径）：替换已安装的包需要新的客户端模块；没有 HMR 的 profile 还需要重启。
 
-**卸载** — 用 `plugin_manager` `remove_bundle`，target 填
-`dsh-session-mode-indicator`；或在侧栏「插件」页把该 bundle 关掉。
+**卸载** — `dsh plugin --profile web remove dsh-session-mode-indicator`；或用
+`plugin_manager` `remove_bundle`，target 填 `dsh-session-mode-indicator`；或在侧栏
+「插件」页把该 bundle 关掉。
 
 ## 模式不是写死的
 
@@ -87,6 +122,17 @@ export function apply(ctx) {
 ```
 
 `registerMode` 返回 disposer（在 `ctx.effect` 里注册会自动随插件卸载释放）。服务还提供 `getModes()`（当前 `{ id, name, color, builtin, contributed }` 列表）和 `subscribe(fn)`。贡献只在提供方插件加载期间生效；没有贡献时自动配色照常工作。
+
+## 发布
+
+在仓库根目录按 `package.json` 里的包名发布即可，没有构建步骤：
+
+```sh
+npm login
+npm publish
+```
+
+`npm pack --dry-run` 可以先看会发布哪些文件。
 
 ## 文件
 
