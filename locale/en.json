@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Session mode indicator",
-    "description": "Shows each Session's own agent-preset mode (Standard, PTC, Create, Minimal) beside its row in the left sidebar."
+    "description": "Shows each Session's own mode beside its row in the left sidebar, with a configurable colored dot per mode; settings live in Settings → Mode dots."
   }
 }
