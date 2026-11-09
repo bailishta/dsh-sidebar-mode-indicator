@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Session mode indicator",
+    "description": "Shows each Session's own agent-preset mode (Standard, PTC, Create, Minimal) beside its row in the left sidebar."
+  }
+}

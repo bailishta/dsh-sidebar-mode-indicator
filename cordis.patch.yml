@@ -1,0 +1,5 @@
+# Bundle layer for the sidebar session-mode indicator: one Host entry, whose
+# Client half draws each Session's mode in the sidebar row.
+- insert:
+    - id: session-mode-indicator
+      name: "dsh-session-mode-indicator"
